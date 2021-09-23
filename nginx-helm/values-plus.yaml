@@ -3,7 +3,7 @@ controller:
   image:
     repository: gcr.io/f5-gcs-4299-sales-se-nginx/nginx-plus-ingress
     tag: "1.12.1-ubi"
-  setAsDefaultIngress: false
+  setAsDefaultIngress: true
   ingressClass: nginx
   enableCustomResources: true
   enablePreviewPolicies: true
