@@ -1,3 +1,7 @@
+prometheus:
+  create: true
+  scheme: http
+  port: 9113
 controller:
   nginxplus: true
   image:
@@ -7,6 +11,9 @@ controller:
   ingressClass: nginx
   enableCustomResources: true
   enablePreviewPolicies: true
+  enableTLSPassthrough: true
+  appprotect:
+    enable: true
   enableSnippets: true
   healthStatus: true
   latency-metrics: true
@@ -38,8 +45,126 @@ controller:
       # for debugging
       error-log-level: info
       # plus level logging:
-      log-format:  '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for" rn="$resource_name" "$resource_type" "$resource_namespace" svc="$service" "$request_id" rt=“$request_time” ua=“$upstream_addr” uct="$upstream_connect_time" uht="$upstream_header_time" urt="$upstream_response_time" uqt=“$upstream_queue_time“ cs=“$upstream_cache_status“'
-prometheus:
-  create: true
-  scheme: http
-  port: 9113
+      #log-format:  '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for" rn="$resource_name" "$resource_type" "$resource_namespace" svc="$service" "$request_id" rt=“$request_time” ua=“$upstream_addr” uct="$upstream_connect_time" uht="$upstream_header_time" urt="$upstream_response_time" uqt=“$upstream_queue_time“ cs=“$upstream_cache_status“'
+      log-format: |-
+        json\n
+          {\n
+            \"ancient_browser\":\"$ancient_browser\",\n
+            \"arg_\":\"$arg_\",\n
+            \"args\":\"$args\",\n
+            \"body_bytes_sent\":\"$body_bytes_sent\",\n
+            \"bytes_sent\":\"$bytes_sent\",\n
+            \"connection\":\"$connection\",\n
+            \"connection_requests\":\"$connection_requests\",\n
+            \"connections_active\":\"$connections_active\",\n
+            \"connections_reading\":\"$connections_reading\",\n
+            \"connections_writing\":\"$connections_writing\",\n
+            \"content_length\":\"$content_length\",\n
+            \"content_type\":\"$content_type\",\n
+            \"cookie_\":\"$cookie_\",\n
+            \"date_gmt\":\"$date_gmt\",\n
+            \"date_local\":\"$date_local\",\n
+            \"document_root\":\"$document_root\",\n
+            \"document_uri\":\"$document_uri\",\n
+            \"fastcgi_path_info\":\"$fastcgi_path_info\",\n
+            \"fastcgi_script_name\":\"$fastcgi_script_name\",\n
+            \"gzip_ratio\":\"$gzip_ratio\",\n
+            \"host\":\"$host\",\n
+            \"hostname\":\"$hostname\",\n
+            \"http2\":\"$http2\",\n
+            \"http_\":\"$http_\",\n
+            \"https\":\"$https\",\n
+            \"invalid_referer\":\"$invalid_referer\",\n
+            \"is_args\":\"$is_args\",\n
+            \"jwt_claim_\":\"$jwt_claim_\",\n
+            \"jwt_header_\":\"$jwt_header_\",\n
+            \"limit_conn_status\":\"$limit_conn_status\",\n
+            \"limit_rate\":\"$limit_rate\",\n
+            \"limit_req_status\":\"$limit_req_status\",\n
+            \"modern_browser\":\"$modern_browser\",\n
+            \"msec\":\"$msec\",\n\"msie\":\"$msie\",\n
+            \"nginx_version\":\"$nginx_version\",\n
+            \"pid\":\"$pid\",\n
+            \"pipe\":\"$pipe\",\n
+            \"proxy_add_x_forwarded_for\":\"$proxy_add_x_forwarded_for\",\n
+            \"proxy_host\":\"$proxy_host\",\n
+            \"proxy_port\":\"$proxy_port\",\n
+            \"proxy_protocol_addr\":\"$proxy_protocol_addr\",\n
+            \"proxy_protocol_port\":\"$proxy_protocol_port\",\n
+            \"proxy_protocol_server_addr\":\"$proxy_protocol_server_addr\",\n
+            \"proxy_protocol_server_port\":\"$proxy_protocol_server_port\",\n
+            \"query_string\":\"$query_string\",\n
+            \"realip_remote_addr\":\"$realip_remote_addr\",\n
+            \"realip_remote_port\":\"$realip_remote_port\",\n
+            \"realpath_root\":\"$realpath_root\",\n
+            \"remote_addr\":\"$remote_addr\",\n
+            \"remote_port\":\"$remote_port\",\n
+            \"remote_user\":\"$remote_user\",\n
+            \"request\":\"$request\",\n
+            \"request_body\":\"$request_body\",\n
+            \"request_body_file\":\"$request_body_file\",\n
+            \"request_completion\":\"$request_completion\",\n
+            \"request_filename\":\"$request_filename\",\n
+            \"request_id\":\"$request_id\",\n
+            \"request_length\":\"$request_length\",\n
+            \"request_method\":\"$request_method\",\n
+            \"request_time\":\"$request_time\",\n
+            \"request_uri\":\"$request_uri\",\n
+            \"scheme\":\"$scheme\",\n
+            \"secure_link\":\"$secure_link\",\n
+            \"secure_link_expires\":\"$secure_link_expires\",\n
+            \"sent_http_\":\"$sent_http_\",\n
+            \"sent_trailer_\":\"$sent_trailer_\",\n
+            \"server_addr\":\"$server_addr\",\n
+            \"server_name\":\"$server_name\",\n
+            \"server_port\":\"$server_port\",\n
+            \"server_protocol\":\"$server_protocol\",\n
+            \"session_log_binary_id\":\"$session_log_binary_id\",\n
+            \"session_log_id\":\"$session_log_id\",\n
+            \"slice_range\":\"$slice_range\",\n
+            \"ssl_cipher\":\"$ssl_cipher\",\n
+            \"ssl_ciphers\":\"$ssl_ciphers\",\n
+            \"ssl_client_cert\":\"$ssl_client_cert\",\n
+            \"ssl_client_escaped_cert\":\"$ssl_client_escaped_cert\",\n
+            \"ssl_client_fingerprint\":\"$ssl_client_fingerprint\",\n
+            \"ssl_client_i_dn\":\"$ssl_client_i_dn\",\n
+            \"ssl_client_i_dn_legacy\":\"$ssl_client_i_dn_legacy\",\n
+            \"ssl_client_raw_cert\":\"$ssl_client_raw_cert\",\n
+            \"ssl_client_s_dn\":\"$ssl_client_s_dn\",\n
+            \"ssl_client_s_dn_legacy\":\"$ssl_client_s_dn_legacy\",\n
+            \"ssl_client_serial\":\"$ssl_client_serial\",\n
+            \"ssl_client_v_end\":\"$ssl_client_v_end\",\n
+            \"ssl_client_v_remain\":\"$ssl_client_v_remain\",\n
+            \"ssl_client_v_start\":\"$ssl_client_v_start\",\n
+            \"ssl_client_verify\":\"$ssl_client_verify\",\n
+            \"ssl_curves\":\"$ssl_curves\",\n
+            \"ssl_early_data\":\"$ssl_early_data\",\n
+            \"ssl_protocol\":\"$ssl_protocol\",\n
+            \"ssl_server_name\":\"$ssl_server_name\",\n
+            \"ssl_session_id\":\"$ssl_session_id\",\n
+            \"ssl_session_reused\":\"$ssl_session_reused\",\n
+            \"status\":\"$status\",\n
+            \"tcpinfo_rtt\":\"$tcpinfo_rtt\",\n
+            \"tcpinfo_rttvar\":\"$tcpinfo_rttvar\",\n
+            \"tcpinfo_snd_cwnd\":\"$tcpinfo_snd_cwnd\",\n
+            \"tcpinfo_rcv_space\":\"$tcpinfo_rcv_space\",\n
+            \"time_iso8601\":\"$time_iso8601\",\n
+            \"time_local\":\"$time_local\",\n
+            \"uid_got\":\"$uid_got\",\n
+            \"uid_reset\":\"$uid_reset\",\n
+            \"uid_set\":\"$uid_set\",\n
+            \"upstream_addr\":\"$upstream_addr\",\n
+            \"upstream_bytes_received\":\"$upstream_bytes_received\",\n
+            \"upstream_bytes_sent\":\"$upstream_bytes_sent\",\n
+            \"upstream_cache_status\":\"$upstream_cache_status\",\n
+            \"upstream_connect_time\":\"$upstream_connect_time\",\n
+            \"upstream_cookie_\":\"$upstream_cookie_\",\n
+            \"upstream_header_time\":\"$upstream_header_time\",\n
+            \"upstream_http_\":\"$upstream_http_\",\n
+            \"upstream_queue_time\":\"$upstream_queue_time\",\n
+            \"upstream_response_length\":\"$upstream_response_length\",\n
+            \"upstream_response_time\":\"$upstream_response_time\",\n
+            \"upstream_status\":\"$upstream_status\",\n
+            \"upstream_trailer_\":\"$upstream_trailer_\",\n
+            \"uri\":\"$uri\"\n
+          };
