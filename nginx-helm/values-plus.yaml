@@ -5,8 +5,11 @@ prometheus:
 controller:
   nginxplus: true
   image:
-    repository: gcr.io/f5-gcs-4299-sales-se-nginx/nginx-plus-ingress
-    tag: "1.12.1-ubi"
+    repository: private-registry.nginx.com/nginx-ic-nap/nginx-plus-ingress
+    tag: 2.0.3-ubi
+  serviceAccount:
+    # name: nginx-ingress
+    imagePullSecretName: regcred
   setAsDefaultIngress: true
   ingressClass: nginx
   enableCustomResources: true
@@ -44,8 +47,16 @@ controller:
       lb-method: "least_time last_byte"
       # for debugging
       error-log-level: info
-      # plus level logging:
-      #log-format:  '$remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent "$http_referer" "$http_user_agent" "$http_x_forwarded_for" rn="$resource_name" "$resource_type" "$resource_namespace" svc="$service" "$request_id" rt=“$request_time” ua=“$upstream_addr” uct="$upstream_connect_time" uht="$upstream_header_time" urt="$upstream_response_time" uqt=“$upstream_queue_time“ cs=“$upstream_cache_status“'
+      # plus logging:
+      # log-format:  |-
+      #   $remote_addr - $remote_user [$time_local] "$request" $status $body_bytes_sent 
+      #   "$http_referer" "$http_user_agent" "$http_x_forwarded_for" rn="$resource_name" 
+      #   "$resource_type" "$resource_namespace" svc="$service" 
+      #   "$request_id" rt=“$request_time” ua=“$upstream_addr” 
+      #   uct="$upstream_connect_time" uht="$upstream_header_time" 
+      #   urt="$upstream_response_time" uqt=“$upstream_queue_time“ cs=“$upstream_cache_status“'
+      #
+      # JSON logging of all possible variables
       log-format: |-
         json\n
           {\n

@@ -9,8 +9,15 @@ This repo uses a real DNS domain name hosted in GCP DNS. You can also use host f
 1. Create a cluster, I use gke:
 
 ```shell
-gcloud container clusters create jesse-gke4 --num-nodes=1 --zone=us-east1
+gcloud container clusters create jesse-gke4 --num-nodes=1 --zone=us-east1-d
 ```
+
+1. Create your registry credentials following one of the documented methods <https://docs.nginx.com/nginx-ingress-controller/installation/using-the-jwt-token-docker-secret/>
+  which will be something like:
+
+  ```shell
+  kubectl create secret docker-registry regcred --docker-server=private-registry.nginx.com --docker-password=none -n nginx-ingress --docker-username=<JWT Token>
+  ```
 
 1. Install the Ingress Controller:
 
@@ -33,7 +40,7 @@ gcloud container clusters create jesse-gke4 --num-nodes=1 --zone=us-east1
 1. Create a wildcard dns entry with the External-IP:
 
     ```shell
-    gcloud dns record-sets create '*.k4.nginx.rocks' --rrdatas=34.139.198.156 --type=A --ttl=60 --zone=nginx-rocks
+    gcloud dns record-sets create '*.k4.nginx.rocks' --rrdatas=35.243.238.160 --type=A --ttl=60 --zone=nginx-rocks
     ```
 
 1. Edit the [prometheus-ingress.yaml](prometheus-ingress.yaml) and [grafana-ingress.yaml](grafana-ingress.yaml) host names to match.
